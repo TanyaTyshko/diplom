@@ -11,13 +11,13 @@
 
 1.	Клонировать репозиторий
 
-<code>git clone https://github.com/TanyaTyshko/diplom.git</code>
+*Выполнить команду:* <code>git clone https://github.com/TanyaTyshko/diplom.git</code>
 
 2.	Перейти в склонированный репозиторий
 
 3.	Запустить контейнеры Docker
 
-<code>docker-compose up –build</code>
+*Выполнить команду:* <code>docker-compose up –build</code>
 
 4.	Запустить приложение
 
@@ -29,7 +29,7 @@
 
 5. Запустить тесты
 
- *для mysql:*
+*для mysql:*
  <code>./gradlew clean test "-Ddb.url=jdbc:mysql://localhost:3306/app"</code>
 
 *для postgresql:*
@@ -38,10 +38,12 @@
 ## Формирование отчёта Allure
 *Генерация отчёта после прохождения тестов:*
 <code>gradlew allureReport</code>
+
 или
+
 *Генерация отчёта и автоматическое открытие в браузере по умолчанию:*
 <code>gradlew allureServe</code>
 
 ## Остановка контейнеров
-*Чтобы остановить контейнер выполняем команду:*
+*Чтобы остановить контейнер выполнить команду:*
 <code>docker-compose down</code>
