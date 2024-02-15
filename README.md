@@ -11,48 +11,40 @@
 
 1.	Клонировать репозиторий
 
-<code>git clone https://github.com/TanyaTyshko/diplom.git</code>
+    <code>git clone https://github.com/TanyaTyshko/diplom.git</code>
 
 2.	Перейти в склонированный репозиторий
 
 3.	Запустить контейнеры Docker
 
-<code>docker-compose up –build</code>
+    <code>docker-compose up –build</code>
 
 4.	Запустить приложение
 
-*для mysql:*
+    *для mysql:*
+    <code>java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar</code>
 
-<code>java "-Dspring.datasource.url=jdbc:mysql://localhost:3306/app" -jar artifacts/aqa-shop.jar</code>
-
-*для postgresql:*
-
-<code>java "-Dspring.datasource.url=jdbc:postgresql://localhost:5432/app" -jar artifacts/aqa-shop.jar</code>
+    *для postgresql:*
+    <code>java "-Dspring.datasource.url=jdbc:postgresql://localhost:5432/app" -jar artifacts/aqa-shop.jar</code>
 
 5. Запустить тесты
 
-*для mysql:*
+     *для mysql:*
+    <code>./gradlew clean test "-Ddb.url=jdbc:mysql://localhost:3306/app"</code>
 
-<code>./gradlew clean test "-Ddb.url=jdbc:mysql://localhost:3306/app"</code>
-
-*для postgresql:*
-
-<code>./gradlew clean test "-Ddb.url=jdbc:postgresql://localhost:5432/app"</code>
+     *для postgresql:*
+     <code>./gradlew clean test "-Ddb.url=jdbc:postgresql://localhost:5432/app"</code>
 
 ## Формирование отчёта Allure
 
-*генерация отчёта после прохождения тестов:*
-
-<code>gradlew allureReport</code>
-
+    *Генерация отчёта после прохождения тестов:*
+    <code>gradlew allureReport</code>
 или
 
-*генерация отчёта и автоматическое открытие в браузере по умолчанию:*
-
-<code>gradlew allureServe</code>
+    *Генерация отчёта и автоматическое открытие в браузере по умолчанию:*
+    <code>gradlew allureServe</code>
 
 ## Остановка контейнеров
 
-*Чтобы остановить контейнер выполняем команду:*
-
-<code>docker-compose down</code>
+    *Чтобы остановить контейнер выполняем команду:*
+    <code>docker-compose down</code>
