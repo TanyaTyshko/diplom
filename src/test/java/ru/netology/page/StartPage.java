@@ -19,15 +19,6 @@ public class StartPage {
     private static final SelenideElement notificationApproved = $(".notification_status_ok");
     private static final SelenideElement notificationDeclined = $(".notification_status_error");
 
-
-    private static final SelenideElement wrongFormat = $(byText("Неверный формат"));
-    private static final SelenideElement requiredField = $(byText("Поле обязательно для заполнения"));
-    private static final SelenideElement invalidDeadline = $(byText("Неверно указан срок действия карты"));
-    private static final SelenideElement cardHasExpired = $(byText("Истёк срок действия карты"));
-
-
-
-
     public void continueButtonClick() {
         continueButton.click();
     }
