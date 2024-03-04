@@ -41,6 +41,10 @@ bin/
 ### Mac OS ###
 .DS_Store
 
+# exclude databases folders
 data-mysql
 data-postgres
 data
+
+# remove credntials from the repo
+.env
