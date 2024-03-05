@@ -42,7 +42,7 @@ public class DataHelper {
             return declinedCardNumber();
         }
         if (status == getStatusInvalid()) {
-            return declinedCardNumber();
+            return invalidCardNumber();
         }
         return "Allowed Statuses: APPROVED|DECLINED|INVALID";
     }
