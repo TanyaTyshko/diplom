@@ -4,16 +4,18 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Condition.*;
 import java.time.Duration;
-import ru.netology.page.StartPageHelper;
-import ru.netology.data.DataHelper;
+import ru.netology.helpers.*;
+
 
 public class PurchaseByCardTest {
     private static final StartPageHelper startPage = new StartPageHelper();
     private static final int maxTimeout = 30;
+    private static final SqlHelper sql = new SqlHelper();
 
     @BeforeEach
     void setUp() {
@@ -33,6 +35,7 @@ public class PurchaseByCardTest {
         startPage.setCvc(cardInfo.getCvc());
         startPage.continueButtonClick();
         startPage.getNotificationApproved().shouldBe(visible, Duration.ofSeconds(maxTimeout));
+        assertEquals(DataHelper.getStatusApproved(), sql.getLastPaymentStatus());
     }
 
     @Test
@@ -47,5 +50,6 @@ public class PurchaseByCardTest {
         startPage.setCvc(cardInfo.getCvc());
         startPage.continueButtonClick();
         startPage.getNotificationDeclined().shouldBe(visible, Duration.ofSeconds(maxTimeout));
+        assertEquals(DataHelper.getStatusDeclined(), sql.getLastPaymentStatus());
     }
 }

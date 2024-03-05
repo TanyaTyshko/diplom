@@ -1,4 +1,4 @@
-package ru.netology.data;
+package ru.netology.helpers;
 
 import com.github.javafaker.Faker;
 import lombok.Value;
@@ -15,6 +15,10 @@ public class DataHelper {
     }
 
     public static String declinedCardNumber() {
+        return "4444 4444 4444 4442";
+    }
+
+    public static String invalidCardNumber() {
         return "4444 4444 4444 4444";
     }
 
@@ -26,6 +30,10 @@ public class DataHelper {
         return "DECLINED";
     }
 
+    public static String getStatusInvalid() {
+        return "INVALID";
+    }
+
     public static String generateCardNumber(String status) {
         if (status == getStatusApproved()) {
             return approvedCardNumber();
@@ -33,7 +41,10 @@ public class DataHelper {
         if (status == getStatusDeclined()) {
             return declinedCardNumber();
         }
-        return "Allowed Statuses: APPROVED|DECLINED";
+        if (status == getStatusInvalid()) {
+            return declinedCardNumber();
+        }
+        return "Allowed Statuses: APPROVED|DECLINED|INVALID";
     }
 
     public static String generateCardHolder(String locale) {
@@ -48,7 +59,7 @@ public class DataHelper {
 
     public static String generateYear() {
         Faker faker = new Faker();
-        return String.valueOf(faker.number().numberBetween(24, 30));
+        return String.valueOf(faker.number().numberBetween(25, 30));
     }
 
     public static String generateCvc() {

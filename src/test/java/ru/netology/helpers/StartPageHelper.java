@@ -1,4 +1,4 @@
-package ru.netology.page;
+package ru.netology.helpers;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
@@ -19,7 +19,8 @@ public class StartPageHelper {
     private static final SelenideElement cvc = $(byXpath("//span[contains(text(),'CVC/CVV')]/following-sibling::span/input"));
     private static final SelenideElement continueButton = $(byText("Продолжить"));
     private static final SelenideElement notificationApproved = $(".notification_status_ok");
-    private static final SelenideElement notificationDeclined = $(".notification_status_error");
+    private static final SelenideElement notificationDeclined = $(".notification_status_ok");
+    private static final SelenideElement notificationInvalid = $(".notification_status_error");
 
     private static final SelenideElement wrongFormat = $(byText("Неверный формат"));
     private static final SelenideElement requiredField = $(byText("Поле обязательно для заполнения"));
@@ -65,5 +66,9 @@ public class StartPageHelper {
 
     public SelenideElement getNotificationDeclined() {
         return notificationDeclined;
+    }
+
+    public SelenideElement getNotificationInvalid() {
+        return notificationInvalid;
     }
 }
