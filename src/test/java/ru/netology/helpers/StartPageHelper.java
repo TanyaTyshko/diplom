@@ -40,26 +40,6 @@ public class StartPageHelper {
         buttonBuyWithCreditCard.click();
     }
 
-    public void setCardNumber(String value) {
-        cardNumber.setValue(value);
-    }
-
-    public void setCardHolder(String value) {
-        cardHolder.setValue(value);
-    }
-
-    public void setMonth(String value) {
-        month.setValue(value);
-    }
-
-    public void setYear(String value) {
-        year.setValue(value);
-    }
-
-    public void setCvc(String value) {
-        cvc.setValue(value);
-    }
-
     public SelenideElement getNotificationApproved() {
         return notificationApproved;
     }
@@ -70,5 +50,13 @@ public class StartPageHelper {
 
     public SelenideElement getNotificationInvalid() {
         return notificationInvalid;
+    }
+
+    public void fillCardInfo(DataHelper.CardInfo cardInfo) {
+        cardNumber.setValue(cardInfo.getCardNumber());
+        cardHolder.setValue(cardInfo.getCardHolder());
+        month.setValue(cardInfo.getMonth());
+        year.setValue(cardInfo.getYear());
+        cvc.setValue(cardInfo.getCvc());
     }
 }

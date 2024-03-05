@@ -28,11 +28,7 @@ public class PurchaseByCardTest {
     void shouldBePaidByApprovedCard() {
         startPage.buttonBuyWithDebitCardClick();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "ru");
-        startPage.setCardNumber(cardInfo.getCardNumber());
-        startPage.setCardHolder(cardInfo.getCardHolder());
-        startPage.setMonth(cardInfo.getMonth());
-        startPage.setYear(cardInfo.getYear());
-        startPage.setCvc(cardInfo.getCvc());
+        startPage.fillCardInfo(cardInfo);
         startPage.continueButtonClick();
         startPage.getNotificationApproved().shouldBe(visible, Duration.ofSeconds(maxTimeout));
         assertEquals(DataHelper.getStatusApproved(), sql.getLastPaymentStatus());
@@ -43,11 +39,7 @@ public class PurchaseByCardTest {
     void shouldBeRejectedByDeclinedCard() {
         startPage.buttonBuyWithDebitCardClick();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "ru");
-        startPage.setCardNumber(cardInfo.getCardNumber());
-        startPage.setCardHolder(cardInfo.getCardHolder());
-        startPage.setMonth(cardInfo.getMonth());
-        startPage.setYear(cardInfo.getYear());
-        startPage.setCvc(cardInfo.getCvc());
+        startPage.fillCardInfo(cardInfo);
         startPage.continueButtonClick();
         startPage.getNotificationDeclined().shouldBe(visible, Duration.ofSeconds(maxTimeout));
         assertEquals(DataHelper.getStatusDeclined(), sql.getLastPaymentStatus());
