@@ -26,6 +26,16 @@ public class DataHelper {
         return "DECLINED";
     }
 
+    public static String generateCardNumber(String status) {
+        if (status == getStatusApproved()) {
+            return approvedCardNumber();
+        }
+        if (status == getStatusDeclined()) {
+            return declinedCardNumber();
+        }
+        return "Allowed Statuses: APPROVED|DECLINED";
+    }
+
     public static String generateCardHolder(String locale) {
         var faker = new Faker(new Locale(locale));
         return faker.name().fullName();
@@ -33,7 +43,7 @@ public class DataHelper {
 
     public static String generateMonth() {
         Faker faker = new Faker();
-        return String.valueOf(faker.number().numberBetween(1, 12));
+        return String.format("%02d", faker.number().numberBetween(1, 12));
     }
 
     public static String generateYear() {
@@ -46,12 +56,21 @@ public class DataHelper {
         return faker.numerify("###");
     }
 
-    public static CardInfo generateUser(String locale) {
-        return new CardInfo(generateCardHolder(locale), generateMonth(), generateYear(), generateCvc());
+    public static CardInfo generateCard(String status, String locale) {
+        return new CardInfo(
+            status,
+            generateCardNumber(status),
+            generateCardHolder(locale),
+            generateMonth(),
+            generateYear(),
+            generateCvc()
+        );
     }
 
     @Value
     public static class CardInfo {
+        String status;
+        String cardNumber;
         String cardHolder;
         String month;
         String year;
