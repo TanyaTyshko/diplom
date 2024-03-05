@@ -15,7 +15,7 @@ public class DataHelper {
     }
 
     public static String declinedCardNumber() {
-        return "4444 4444 4444 4442";
+        return "4444 4444 4444 4444";
     }
 
     public static String getStatusApproved() {

@@ -62,4 +62,8 @@ public class StartPageHelper {
     public SelenideElement getNotificationApproved() {
         return notificationApproved;
     }
+
+    public SelenideElement getNotificationDeclined() {
+        return notificationDeclined;
+    }
 }
