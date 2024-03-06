@@ -4,6 +4,8 @@ import com.github.javafaker.Faker;
 import lombok.Value;
 import lombok.Data;
 import lombok.AllArgsConstructor;
+import java.util.Calendar;
+
 
 import java.util.Locale;
 
@@ -53,6 +55,11 @@ public class DataHelper {
     public static String generateYear() {
         Faker faker = new Faker();
         return String.valueOf(faker.number().numberBetween(25, 30));
+    }
+
+    public static String getPrevYear() {
+        int prevYear = Calendar.getInstance().get(Calendar.YEAR) - 1;
+        return String.valueOf(prevYear).substring(2);
     }
 
     public static String generateCvc() {

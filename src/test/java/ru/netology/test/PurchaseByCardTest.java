@@ -5,14 +5,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Condition.*;
-// import static com.codeborne.selenide.Condition.cssClass;
+
 import java.time.Duration;
 import ru.netology.helpers.*;
+
+import java.util.Calendar;
 
 public class PurchaseByCardTest {
     private static final StartPageHelper startPage = StartPageHelper.getInstance();
     private static final int maxTimeout = 20;
     private static final SqlHelper sql = SqlHelper.getInstance();
+
+    private final String errMsgWrongFormat = "Неверный формат";
+    private final String errMsgRequiredField = "Поле обязательно для заполнения";
+    private final String errMsgInvalidDeadline = "Неверно указан срок действия карты";
+    private final String errMsgCardHasExpired = "Истёк срок действия карты";
 
     @BeforeEach
     void setUp() {
@@ -51,7 +58,7 @@ public class PurchaseByCardTest {
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", true);
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
-        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgInvalidDeadline);
+        startPage.fieldShouldHasError(startPage.getMonthInput(), errMsgInvalidDeadline);
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
@@ -63,11 +70,11 @@ public class PurchaseByCardTest {
         startPage.clickButtonBuyWithDebitCard();
         startPage.clickContinueButton();
 
-        startPage.fieldShouldHasError(startPage.getCardNumberInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldHasError(startPage.getYearInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
-        startPage.fieldShouldHasError(startPage.getCvcInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getCardNumberInput(), errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getMonthInput(), errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getYearInput(), errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), errMsgRequiredField);
+        startPage.fieldShouldHasError(startPage.getCvcInput(), errMsgWrongFormat);
 
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
@@ -83,7 +90,7 @@ public class PurchaseByCardTest {
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
 
-        startPage.fieldShouldHasError(startPage.getCardNumberInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getCardNumberInput(), errMsgWrongFormat);
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldBeValid(startPage.getYearInput());
         startPage.fieldShouldBeValid(startPage.getCardHolderInput());
@@ -104,7 +111,7 @@ public class PurchaseByCardTest {
         startPage.clickContinueButton();
 
         startPage.fieldShouldBeValid(startPage.getCardNumberInput());
-        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getMonthInput(), errMsgWrongFormat);
         startPage.fieldShouldBeValid(startPage.getYearInput());
         startPage.fieldShouldBeValid(startPage.getCardHolderInput());
         startPage.fieldShouldBeValid(startPage.getCvcInput());
@@ -126,7 +133,7 @@ public class PurchaseByCardTest {
         startPage.fieldShouldBeValid(startPage.getCardNumberInput());
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldBeValid(startPage.getYearInput());
-        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), errMsgRequiredField);
         startPage.fieldShouldBeValid(startPage.getCvcInput());
 
         int countRecordsAfter = sql.getPaymentsCount();
@@ -145,7 +152,7 @@ public class PurchaseByCardTest {
 
         startPage.fieldShouldBeValid(startPage.getCardNumberInput());
         startPage.fieldShouldBeValid(startPage.getMonthInput());
-        startPage.fieldShouldHasError(startPage.getYearInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getYearInput(), errMsgWrongFormat);
         startPage.fieldShouldBeValid(startPage.getCardHolderInput());
         startPage.fieldShouldBeValid(startPage.getCvcInput());
 
@@ -166,8 +173,28 @@ public class PurchaseByCardTest {
         startPage.fieldShouldBeValid(startPage.getCardNumberInput());
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldBeValid(startPage.getYearInput());
-        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
-        startPage.fieldShouldHasError(startPage.getCvcInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), errMsgRequiredField);
+        startPage.fieldShouldHasError(startPage.getCvcInput(), errMsgWrongFormat);
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("10: Купить. Ввод невалидных данных в поле «Год», карта просрочена на год")
+    void shouldBeErrorWithPrevYear() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setYear(DataHelper.getPrevYear());
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldHasError(startPage.getYearInput(), errMsgCardHasExpired);
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
 
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);

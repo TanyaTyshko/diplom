@@ -25,11 +25,6 @@ public class StartPageHelper {
     private final SelenideElement continueButton = $(byText("Продолжить"));
     private final SelenideElement continueButtonWrapper = continueButton.parent().parent();
 
-    public final String errMsgWrongFormat = "Неверный формат";
-    public final String errMsgRequiredField = "Поле обязательно для заполнения";
-    public final String errMsgInvalidDeadline = "Неверно указан срок действия карты";
-    public final String errMsgCardHasExpired = "Истёк срок действия карты";
-
     // Приватный конструктор, чтобы запретить создание экземпляров класса вне его самого
     private StartPageHelper() {}
 
