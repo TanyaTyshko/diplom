@@ -27,7 +27,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("1: Купить. Ввод валидных данных в поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV»")
+    @DisplayName("01: Купить. Ввод валидных данных в поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV»")
     void shouldBePaidByApprovedCard() {
         startPage.clickButtonBuyWithDebitCard();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
@@ -39,7 +39,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("2: Купить. Отказ в оплате при вводе номера отклонённой карты")
+    @DisplayName("02: Купить. Отказ в оплате при вводе номера отклонённой карты")
     void shouldBeDeclinedByDeclinedCard() {
         startPage.clickButtonBuyWithDebitCard();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", false);
@@ -51,7 +51,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("3: Купить. Ввод невалидных данных в поле «Месяц»")
+    @DisplayName("03: Купить. Ввод невалидных данных в поле «Месяц»")
     void shouldBeErrorWithWrongMonth() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
@@ -64,7 +64,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("4: Купить. Оставить поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV» незаполненными")
+    @DisplayName("04: Купить. Оставить поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV» незаполненными")
     void shouldBeErrorWithEmptyForm() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
@@ -81,7 +81,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("5: Купить. Оставить поле «Номер карты» незаполненным")
+    @DisplayName("05: Купить. Оставить поле «Номер карты» незаполненным")
     void shouldBeErrorWithEmptyCard() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
@@ -101,7 +101,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("6: Купить. Оставить поле «Месяц» незаполненным")
+    @DisplayName("06: Купить. Оставить поле «Месяц» незаполненным")
     void shouldBeErrorWithEmptyMonth() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
@@ -121,7 +121,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("7: Купить. Оставить поле «Владелец» незаполненным")
+    @DisplayName("07: Купить. Оставить поле «Владелец» незаполненным")
     void shouldBeErrorWithEmptyCardHolder() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
@@ -141,7 +141,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("8: Купить. Оставить поле «Год» незаполненным")
+    @DisplayName("08: Купить. Оставить поле «Год» незаполненным")
     void shouldBeErrorWithEmptyYear() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
@@ -161,7 +161,7 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("9: Купить. Оставить поле «CVC/CVV» незаполненным")
+    @DisplayName("09: Купить. Оставить поле «CVC/CVV» незаполненным")
     void shouldBeErrorWithEmptyCvc() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
@@ -335,6 +335,26 @@ public class PurchaseByCardTest {
         startPage.fieldShouldBeValid(startPage.getYearInput());
         startPage.fieldShouldBeValid(startPage.getCardHolderInput());
         startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("18: Купить. Ввод трёх нулей (000) в поле «CVC/CVV»")
+    void shouldBeErrorWithZerosInsteadCvc() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCvc("000");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldHasError(startPage.getCvcInput(), errMsgWrongFormat);
 
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
