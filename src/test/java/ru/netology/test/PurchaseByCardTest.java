@@ -260,4 +260,24 @@ public class PurchaseByCardTest {
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
 
+    @Test
+    @DisplayName("14: Купить. Ввод невалидных данных в поле «Месяц», ввод одной цифры вместо двух")
+    void shouldBeErrorWithWrongMonthLength() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setMonth("1");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldHasError(startPage.getMonthInput(), errMsgWrongFormat);
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
 }
