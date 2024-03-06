@@ -21,6 +21,7 @@ public class PurchaseByCardTest {
     private final String errMsgInvalidDeadline = "Неверно указан срок действия карты";
     private final String errMsgCardHasExpired = "Истёк срок действия карты";
     private final String errMsgWrongCardHolder = "Должно состоять из букв на латинице";
+    private final String errMsgWrongCardHolderCyrillic = "Имя и фамилия латиницей";
 
     @BeforeEach
     void setUp() {
@@ -395,6 +396,45 @@ public class PurchaseByCardTest {
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldBeValid(startPage.getYearInput());
         startPage.fieldShouldHasError(startPage.getCardHolderInput(), errMsgWrongCardHolder);
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("21: Купить. Ввод невалидных данных (спецсимволы) в поле «Владелец»")
+    void shouldBeErrorWithWrongCardHolderSpecialSymbols() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCardHolder("!!!");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), errMsgWrongCardHolder);
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("22: Купить. Ввод невалидных данных (русские буквы) в поле «Владелец»")
+    void shouldBeErrorWithWrongCardHolderCyrillic() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "ru", false);
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), errMsgWrongCardHolderCyrillic);
         startPage.fieldShouldBeValid(startPage.getCvcInput());
 
         int countRecordsAfter = sql.getPaymentsCount();

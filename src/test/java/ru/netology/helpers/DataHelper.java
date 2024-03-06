@@ -54,9 +54,9 @@ public class DataHelper {
 
     public static String generateYear() {
         Faker faker = new Faker();
-        int currentYear = Calendar.getInstance().get(Calendar.YEAR) - 2000;
-        int endYear = currentYear + 5;
-        return String.valueOf(faker.number().numberBetween(currentYear, endYear));
+        int startYear = Calendar.getInstance().get(Calendar.YEAR) - 2000 + 1;
+        int endYear = startYear + 4;
+        return String.valueOf(faker.number().numberBetween(startYear, endYear));
     }
 
     public static String getYearWithOffset(int offset) {
