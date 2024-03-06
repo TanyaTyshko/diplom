@@ -23,7 +23,7 @@ public class PurchaseByCardTest {
     @DisplayName("1: Купить. Ввод валидных данных в поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV»")
     void shouldBePaidByApprovedCard() {
         startPage.clickButtonBuyWithDebitCard();
-        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false, false);
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
         startPage.waitForContinueButtonEnabled(maxTimeout);
@@ -35,7 +35,7 @@ public class PurchaseByCardTest {
     @DisplayName("2: Купить. Отказ в оплате при вводе номера отклонённой карты")
     void shouldBeDeclinedByDeclinedCard() {
         startPage.clickButtonBuyWithDebitCard();
-        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", false, false);
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", false);
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
         startPage.waitForContinueButtonEnabled(maxTimeout);
@@ -48,7 +48,7 @@ public class PurchaseByCardTest {
     void shouldBeErrorWithWrongMonth() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
-        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", true, false);
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", true);
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
         startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgInvalidDeadline);
@@ -76,14 +76,33 @@ public class PurchaseByCardTest {
     void shouldBeErrorWithEmptyCard() {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
-        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", false, true);
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCardNumber("");
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
         startPage.fieldShouldHasError(startPage.getCardNumberInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldBeValid(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
-        startPage.fieldShouldBeValid(startPage.getMonthInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldBeValid(startPage.getYearInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldBeValid(startPage.getCvcInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("6: Купить. Оставить поле «Месяц» незаполненным")
+    void shouldBeErrorWithEmptyMonth() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setMonth("");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
     }

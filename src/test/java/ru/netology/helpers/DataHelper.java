@@ -2,6 +2,8 @@ package ru.netology.helpers;
 
 import com.github.javafaker.Faker;
 import lombok.Value;
+import lombok.Data;
+import lombok.AllArgsConstructor;
 
 import java.util.Locale;
 
@@ -58,10 +60,10 @@ public class DataHelper {
         return faker.numerify("###");
     }
 
-    public static CardInfo generateCard(String status, String locale, boolean wrongMonth, boolean emptyCard) {
+    public static CardInfo generateCard(String status, String locale, boolean wrongMonth) {
         return new CardInfo(
             status,
-            emptyCard ? "" : generateCardNumber(status),
+            generateCardNumber(status),
             generateCardHolder(locale),
             generateMonth(wrongMonth),
             generateYear(),
@@ -69,7 +71,8 @@ public class DataHelper {
         );
     }
 
-    @Value
+    @Data
+    @AllArgsConstructor
     public static class CardInfo {
         String status;
         String cardNumber;
