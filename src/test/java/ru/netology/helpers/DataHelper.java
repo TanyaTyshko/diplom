@@ -54,12 +54,14 @@ public class DataHelper {
 
     public static String generateYear() {
         Faker faker = new Faker();
-        return String.valueOf(faker.number().numberBetween(25, 30));
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR) - 2000;
+        int endYear = currentYear + 5;
+        return String.valueOf(faker.number().numberBetween(currentYear, endYear));
     }
 
-    public static String getPrevYear() {
-        int prevYear = Calendar.getInstance().get(Calendar.YEAR) - 1;
-        return String.valueOf(prevYear).substring(2);
+    public static String getYearWithOffset(int offset) {
+        int offsetYear = Calendar.getInstance().get(Calendar.YEAR) + offset;
+        return String.valueOf(offsetYear).substring(2);
     }
 
     public static String generateCvc() {

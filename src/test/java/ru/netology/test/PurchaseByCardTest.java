@@ -186,13 +186,33 @@ public class PurchaseByCardTest {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
-        cardInfo.setYear(DataHelper.getPrevYear());
+        cardInfo.setYear(DataHelper.getYearWithOffset(-1));
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
 
         startPage.fieldShouldBeValid(startPage.getCardNumberInput());
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldHasError(startPage.getYearInput(), errMsgCardHasExpired);
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("11: Купить. Ввод невалидных данных в поле «Год», срок действия карты больше 5 лет")
+    void shouldBeErrorWithCardLongerThenFiveYear() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setYear(DataHelper.getYearWithOffset(6));
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldHasError(startPage.getYearInput(), errMsgInvalidDeadline);
         startPage.fieldShouldBeValid(startPage.getCardHolderInput());
         startPage.fieldShouldBeValid(startPage.getCvcInput());
 
