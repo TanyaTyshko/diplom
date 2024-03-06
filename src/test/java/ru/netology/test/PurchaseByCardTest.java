@@ -20,38 +20,53 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("1. Купить. Ввод валидных данных в поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV»")
+    @DisplayName("1: Купить. Ввод валидных данных в поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV»")
     void shouldBePaidByApprovedCard() {
-        startPage.buttonBuyWithDebitCardClick();
+        startPage.clickButtonBuyWithDebitCard();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
         startPage.fillCardInfo(cardInfo);
-        startPage.continueButtonClick();
+        startPage.clickContinueButton();
         startPage.waitForContinueButtonEnabled(maxTimeout);
         startPage.getNotificationApproved().shouldBe(visible);
         assertEquals(DataHelper.getStatusApproved(), sql.getLastPaymentStatus());
     }
 
     @Test
-    @DisplayName("2 Купить. Отказ в оплате при вводе номера отклонённой карты")
+    @DisplayName("2: Купить. Отказ в оплате при вводе номера отклонённой карты")
     void shouldBeDeclinedByDeclinedCard() {
-        startPage.buttonBuyWithDebitCardClick();
+        startPage.clickButtonBuyWithDebitCard();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", false);
         startPage.fillCardInfo(cardInfo);
-        startPage.continueButtonClick();
+        startPage.clickContinueButton();
         startPage.waitForContinueButtonEnabled(maxTimeout);
         startPage.getNotificationDeclined().shouldBe(visible);
         assertEquals(DataHelper.getStatusDeclined(), sql.getLastPaymentStatus());
     }
 
     @Test
-    @DisplayName("3 Купить. Ввод невалидных данных в поле «Месяц»")
+    @DisplayName("3: Купить. Ввод невалидных данных в поле «Месяц»")
     void shouldBeDeclinedByWrongMonth() {
         int countRecordsBefore = sql.getPaymentsCount();
-        startPage.buttonBuyWithDebitCardClick();
+        startPage.clickButtonBuyWithDebitCard();
         DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", true);
         startPage.fillCardInfo(cardInfo);
-        startPage.continueButtonClick();
-        startPage.getInvalidDeadline().shouldBe(visible);
+        startPage.clickContinueButton();
+        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgInvalidDeadline);
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("4: Купить. Оставить поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV» незаполненными")
+    void shouldBeDeclinedByEmptyForm() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        startPage.clickContinueButton();
+        startPage.fieldShouldHasError(startPage.getCardNumberInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
+        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getYearInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getCvcInput(), startPage.errMsgWrongFormat);
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
     }

@@ -25,10 +25,10 @@ public class StartPageHelper {
     private final SelenideElement continueButton = $(byText("Продолжить"));
     private final SelenideElement continueButtonWrapper = continueButton.parent().parent();
 
-    private final SelenideElement wrongFormat = $(byText("Неверный формат"));
-    private final SelenideElement requiredField = $(byText("Поле обязательно для заполнения"));
-    private final SelenideElement invalidDeadline = $(byText("Неверно указан срок действия карты"));
-    private final SelenideElement cardHasExpired = $(byText("Истёк срок действия карты"));
+    public final String errMsgWrongFormat = "Неверный формат";
+    public final String errMsgRequiredField = "Поле обязательно для заполнения";
+    public final String errMsgInvalidDeadline = "Неверно указан срок действия карты";
+    public final String errMsgCardHasExpired = "Истёк срок действия карты";
 
     // Приватный конструктор, чтобы запретить создание экземпляров класса вне его самого
     private StartPageHelper() {}
@@ -41,32 +41,25 @@ public class StartPageHelper {
         return instance;
     }
 
-    public void continueButtonClick() {
-        continueButton.click();
-    }
+    public void clickContinueButton() { continueButton.click(); }
+    public void clickButtonBuyWithDebitCard() { buttonBuyWithDebitCard.click(); }
+    public void clickButtonBuyWithCreditCard() { buttonBuyWithCreditCard.click(); }
 
-    public void buttonBuyWithDebitCardClick() {
-        buttonBuyWithDebitCard.click();
-    }
-
-    public void buttonBuyWithCreditCard() {
-        buttonBuyWithCreditCard.click();
-    }
-
-    public SelenideElement getNotificationApproved() {
-        return notificationApproved;
-    }
-
-    public SelenideElement getNotificationDeclined() {
-        return notificationDeclined;
-    }
+    public SelenideElement getNotificationApproved() { return notificationApproved; }
+    public SelenideElement getNotificationDeclined() { return notificationDeclined; }
+    public SelenideElement getCardNumberInput() { return cardNumber; }
+    public SelenideElement getCardHolderInput() { return cardHolder; }
+    public SelenideElement getMonthInput() { return month; }
+    public SelenideElement getYearInput() { return year; }
+    public SelenideElement getCvcInput() { return cvc; }
 
     public void waitForContinueButtonEnabled(int timeout) {
         continueButtonWrapper.shouldNotHave(cssClass("button_disabled"), Duration.ofSeconds(timeout));
     }
 
-    public SelenideElement getInvalidDeadline() {
-        return invalidDeadline;
+    public void fieldShouldHasError(SelenideElement field, String errorText) {
+        field.parent().parent().parent().shouldHave(cssClass("input_invalid"));
+        field.parent().parent().shouldHave(text(errorText));
     }
 
     public void fillCardInfo(DataHelper.CardInfo cardInfo) {
