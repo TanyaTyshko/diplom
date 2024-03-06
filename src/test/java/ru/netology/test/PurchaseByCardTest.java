@@ -62,11 +62,13 @@ public class PurchaseByCardTest {
         int countRecordsBefore = sql.getPaymentsCount();
         startPage.clickButtonBuyWithDebitCard();
         startPage.clickContinueButton();
+
         startPage.fieldShouldHasError(startPage.getCardNumberInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
         startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgWrongFormat);
         startPage.fieldShouldHasError(startPage.getYearInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
         startPage.fieldShouldHasError(startPage.getCvcInput(), startPage.errMsgWrongFormat);
+
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
@@ -80,11 +82,13 @@ public class PurchaseByCardTest {
         cardInfo.setCardNumber("");
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
+
         startPage.fieldShouldHasError(startPage.getCardNumberInput(), startPage.errMsgWrongFormat);
-        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
         startPage.fieldShouldBeValid(startPage.getCvcInput());
+
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
@@ -98,11 +102,13 @@ public class PurchaseByCardTest {
         cardInfo.setMonth("");
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
-        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgWrongFormat);
+
         startPage.fieldShouldBeValid(startPage.getCardNumberInput());
-        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldHasError(startPage.getMonthInput(), startPage.errMsgWrongFormat);
         startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
         startPage.fieldShouldBeValid(startPage.getCvcInput());
+
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
@@ -116,11 +122,53 @@ public class PurchaseByCardTest {
         cardInfo.setCardHolder("");
         startPage.fillCardInfo(cardInfo);
         startPage.clickContinueButton();
-        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
+
         startPage.fieldShouldBeValid(startPage.getCardNumberInput());
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
         startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("8: Купить. Оставить поле «Год» незаполненным")
+    void shouldBeErrorWithEmptyYear() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setYear("");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldHasError(startPage.getYearInput(), startPage.errMsgWrongFormat);
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("9: Купить. Оставить поле «CVC/CVV» незаполненным")
+    void shouldBeErrorWithEmptyCvc() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCvc("");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
+        startPage.fieldShouldHasError(startPage.getCvcInput(), startPage.errMsgWrongFormat);
+
         int countRecordsAfter = sql.getPaymentsCount();
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
