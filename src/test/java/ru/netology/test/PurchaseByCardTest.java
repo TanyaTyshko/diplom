@@ -300,4 +300,44 @@ public class PurchaseByCardTest {
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
 
+    @Test
+    @DisplayName("16: Купить. Ввод невалидных данных в поле «Год», ввод двух нулей (00)")
+    void shouldBeErrorWithZerosInsteadYear() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setYear("00");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldHasError(startPage.getYearInput(), errMsgCardHasExpired);
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("17: Купить. Ввод невалидных данных в поле «Месяц», ввод двух нулей (00)")
+    void shouldBeErrorWithZerosInsteadMonth() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setMonth("00");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldHasError(startPage.getMonthInput(), errMsgInvalidDeadline);
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
 }
