@@ -107,4 +107,22 @@ public class PurchaseByCardTest {
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
 
+    @Test
+    @DisplayName("7: Купить. Оставить поле «Владелец» незаполненным")
+    void shouldBeErrorWithEmptyCardHolder() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCardHolder("");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), startPage.errMsgRequiredField);
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
 }
