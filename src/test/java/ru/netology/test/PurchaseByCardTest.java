@@ -20,6 +20,7 @@ public class PurchaseByCardTest {
     private final String errMsgRequiredField = "Поле обязательно для заполнения";
     private final String errMsgInvalidDeadline = "Неверно указан срок действия карты";
     private final String errMsgCardHasExpired = "Истёк срок действия карты";
+    private final String errMsgWrongCardHolder = "Должно состоять из букв на латинице";
 
     @BeforeEach
     void setUp() {
@@ -374,6 +375,26 @@ public class PurchaseByCardTest {
         startPage.fieldShouldBeValid(startPage.getMonthInput());
         startPage.fieldShouldBeValid(startPage.getYearInput());
         startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("20: Купить. Ввод невалидных данных (цифры) в поле «Владелец»")
+    void shouldBeErrorWithWrongCardHolder() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCardHolder("123");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldHasError(startPage.getCardHolderInput(), errMsgWrongCardHolder);
         startPage.fieldShouldBeValid(startPage.getCvcInput());
 
         int countRecordsAfter = sql.getPaymentsCount();
