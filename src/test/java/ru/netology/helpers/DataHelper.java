@@ -18,20 +18,12 @@ public class DataHelper {
         return "4444 4444 4444 4442";
     }
 
-    public static String invalidCardNumber() {
-        return "4444 4444 4444 4444";
-    }
-
     public static String getStatusApproved() {
         return "APPROVED";
     }
 
     public static String getStatusDeclined() {
         return "DECLINED";
-    }
-
-    public static String getStatusInvalid() {
-        return "INVALID";
     }
 
     public static String generateCardNumber(String status) {
@@ -41,10 +33,7 @@ public class DataHelper {
         if (status == getStatusDeclined()) {
             return declinedCardNumber();
         }
-        if (status == getStatusInvalid()) {
-            return invalidCardNumber();
-        }
-        return "Allowed Statuses: APPROVED|DECLINED|INVALID";
+        return "Allowed Statuses: APPROVED|DECLINED";
     }
 
     public static String generateCardHolder(String locale) {
