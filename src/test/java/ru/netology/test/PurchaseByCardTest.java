@@ -220,4 +220,44 @@ public class PurchaseByCardTest {
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
 
+    @Test
+    @DisplayName("12: Купить. Ввод некорректных данных в поле «Год», ввод одной цифры вместо двух")
+    void shouldBeErrorWithWrongYear() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setYear("2");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldHasError(startPage.getYearInput(), errMsgWrongFormat);
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
+    @Test
+    @DisplayName("13: Купить. Ввод некорректных данных в поле «CVC/CVV», ввод одной цифры вместо трех")
+    void shouldBeErrorWithWrongCvc() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCvc("1");
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldBeValid(startPage.getCardNumberInput());
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldHasError(startPage.getCvcInput(), errMsgWrongFormat);
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
 }
