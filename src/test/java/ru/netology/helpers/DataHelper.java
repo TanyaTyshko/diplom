@@ -41,9 +41,9 @@ public class DataHelper {
         return faker.name().fullName();
     }
 
-    public static String generateMonth(boolean isWrongMonth) {
+    public static String generateMonth(boolean wrongMonth) {
         Faker faker = new Faker();
-        return isWrongMonth ? 
+        return wrongMonth ? 
             String.format("%02d", faker.number().numberBetween(13, 33)) :
             String.format("%02d", faker.number().numberBetween(1, 12));
     }
@@ -58,12 +58,12 @@ public class DataHelper {
         return faker.numerify("###");
     }
 
-    public static CardInfo generateCard(String status, String locale, boolean isWrongMonth) {
+    public static CardInfo generateCard(String status, String locale, boolean wrongMonth, boolean emptyCard) {
         return new CardInfo(
             status,
-            generateCardNumber(status),
+            emptyCard ? "" : generateCardNumber(status),
             generateCardHolder(locale),
-            generateMonth(isWrongMonth),
+            generateMonth(wrongMonth),
             generateYear(),
             generateCvc()
         );

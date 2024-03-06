@@ -62,6 +62,11 @@ public class StartPageHelper {
         field.parent().parent().shouldHave(text(errorText));
     }
 
+    public void fieldShouldBeValid(SelenideElement field, String errorText) {
+        field.parent().parent().parent().shouldNotHave(cssClass("input_invalid"));
+        field.parent().parent().find("span.input__sub").shouldNot(exist);
+    }
+
     public void fillCardInfo(DataHelper.CardInfo cardInfo) {
         cardNumber.setValue(cardInfo.getCardNumber());
         cardHolder.setValue(cardInfo.getCardHolder());
