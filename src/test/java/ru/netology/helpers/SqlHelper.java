@@ -51,4 +51,20 @@ public class SqlHelper {
             return "Ошибка при выполнении запроса: " + e.getMessage();
         }
     }
+
+    public int getPaymentsCount() {
+        try {
+            PreparedStatement statement = connection.prepareStatement("SELECT COUNT(*) FROM payment_entity");
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return -1; // в случае ошибки возвращаем -1
+        }
+    }
 }

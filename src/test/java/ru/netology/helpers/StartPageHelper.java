@@ -65,6 +65,9 @@ public class StartPageHelper {
         continueButtonWrapper.shouldNotHave(cssClass("button_disabled"), Duration.ofSeconds(timeout));
     }
 
+    public SelenideElement getInvalidDeadline() {
+        return invalidDeadline;
+    }
 
     public void fillCardInfo(DataHelper.CardInfo cardInfo) {
         cardNumber.setValue(cardInfo.getCardNumber());

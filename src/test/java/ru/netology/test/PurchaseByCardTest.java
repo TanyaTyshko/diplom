@@ -23,7 +23,7 @@ public class PurchaseByCardTest {
     @DisplayName("1. Купить. Ввод валидных данных в поля «Номер карты», «Месяц», «Владелец», «Год», «CVC/CVV»")
     void shouldBePaidByApprovedCard() {
         startPage.buttonBuyWithDebitCardClick();
-        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en");
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
         startPage.fillCardInfo(cardInfo);
         startPage.continueButtonClick();
         startPage.waitForContinueButtonEnabled(maxTimeout);
@@ -32,15 +32,28 @@ public class PurchaseByCardTest {
     }
 
     @Test
-    @DisplayName("2.1 Купить. Отказ в оплате при вводе номера отклонённой карты")
+    @DisplayName("2 Купить. Отказ в оплате при вводе номера отклонённой карты")
     void shouldBeDeclinedByDeclinedCard() {
         startPage.buttonBuyWithDebitCardClick();
-        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "ru");
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", false);
         startPage.fillCardInfo(cardInfo);
         startPage.continueButtonClick();
         startPage.waitForContinueButtonEnabled(maxTimeout);
         startPage.getNotificationDeclined().shouldBe(visible);
         assertEquals(DataHelper.getStatusDeclined(), sql.getLastPaymentStatus());
+    }
+
+    @Test
+    @DisplayName("3 Купить. Ввод невалидных данных в поле «Месяц»")
+    void shouldBeDeclinedByWrongMonth() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.buttonBuyWithDebitCardClick();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusDeclined(), "en", true);
+        startPage.fillCardInfo(cardInfo);
+        startPage.continueButtonClick();
+        startPage.getInvalidDeadline().shouldBe(visible);
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
     }
 
 }
