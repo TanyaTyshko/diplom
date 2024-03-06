@@ -280,4 +280,24 @@ public class PurchaseByCardTest {
         assertEquals(countRecordsBefore, countRecordsAfter);
     }
 
+    @Test
+    @DisplayName("15: Купить. Ввод невалидных данных в поле «Номер карты», ввод 15 цифр вместо 16")
+    void shouldBeErrorWithWrongCardNumber() {
+        int countRecordsBefore = sql.getPaymentsCount();
+        startPage.clickButtonBuyWithDebitCard();
+        DataHelper.CardInfo cardInfo = DataHelper.generateCard(DataHelper.getStatusApproved(), "en", false);
+        cardInfo.setCardNumber(cardInfo.getCardNumber().substring(0, 18));
+        startPage.fillCardInfo(cardInfo);
+        startPage.clickContinueButton();
+
+        startPage.fieldShouldHasError(startPage.getCardNumberInput(), errMsgWrongFormat);
+        startPage.fieldShouldBeValid(startPage.getMonthInput());
+        startPage.fieldShouldBeValid(startPage.getYearInput());
+        startPage.fieldShouldBeValid(startPage.getCardHolderInput());
+        startPage.fieldShouldBeValid(startPage.getCvcInput());
+
+        int countRecordsAfter = sql.getPaymentsCount();
+        assertEquals(countRecordsBefore, countRecordsAfter);
+    }
+
 }
