@@ -28,7 +28,7 @@ public class StartPageHelper {
     // Приватный конструктор, чтобы запретить создание экземпляров класса вне его самого
     private StartPageHelper() {}
 
-    // Метод для получения единственного экземпляра класса
+    // Метод для получения единственного экземпляра класса. Синглтон
     public static StartPageHelper getInstance() {
         if (instance == null) {
             instance = new StartPageHelper();
